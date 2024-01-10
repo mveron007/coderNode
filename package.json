@@ -1,0 +1,22 @@
+{
+  "name": "codernode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ProductManager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mveron007/coderNode.git"
+  },
+  "author": "Marcos Verón",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mveron007/coderNode/issues"
+  },
+  "homepage": "https://github.com/mveron007/coderNode#readme",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
+}
