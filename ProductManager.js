@@ -1,7 +1,9 @@
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
+// const fs = require('fs');
+import { promises as fsPromises } from 'fs';
+// const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 
-class ProductManager {
+export default class ProductManager {
     constructor(path) {
         this.products = [];
         this.path = path;
@@ -87,28 +89,19 @@ class ProductManager {
     async saveToFile(path, data) {
         try {
             const dataToFile = JSON.stringify(data, null, 2);
-            await fs.writeFileSync(path, dataToFile);
+            await fsPromises.writeFile(path, dataToFile);
         } catch (error) {
             console.error('Error al guardar productos:', error);
         }
     }
+
+    async loadFromFile() {
+        try {
+          const data = await fsPromises.readFile(this.path, 'utf-8');
+          return JSON.parse(data);
+        } catch (error) {
+          console.error('Error al cargar productos:', error);
+          console.error('Datos leídos antes del error:', data);
+        }
+    }
 }
-
-
-// TEST
-const prod = new ProductManager("./products.json");
-// Array vacio
-console.log(prod.getProducts());
-// Se agrega un producto
-console.log(prod.addProduct("Producto prueba", "Es un producto prueba", 200, "Sin imagen", "abc123", 25));
-// Array cargado
-console.log(prod.getProducts());
-// Compruebo validaciones
-prod.addProduct("Producto prueba", "Es un producto prueba", 200, "Sin imagen", "abc123", 25);
-// Comprobacion de busqueda por Id => Aplique el id que haya generado en las pruebas anteriores
-prod.getProductById("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0");
-prod.getProductById(2);
-// Cambio de campo => Aplique el id que haya generado en las pruebas anteriores
-prod.updateProduct("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0", {title:"Producto actualizado"});
-// Elimino producto => Aplique el id que haya generado en las pruebas anteriores
-// prod.deleteProduct("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0")
