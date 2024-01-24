@@ -15,13 +15,15 @@ export default class ProductManager {
     }
 
     async addProduct(title, description, price, thumbnail, code, stock) {
+        
         const newProduct = {
             id: uuidv4(),
             title,
             description,
             price,
-            thumbnail,
+            thumbnails:[],
             code,
+            status: true,
             stock
         }
         let codeCheck = this.products.find(product => product.code === code) ? true : false;
