@@ -4,7 +4,7 @@ const router = express.Router();
 
 const cartManager = new CartManager('../carts.json');
 
-router.post('/api/carts', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         await cartManager.loadFromFile();
         const newCart = await cartManager.createCart();
@@ -15,7 +15,7 @@ router.post('/api/carts', async (req, res) => {
     }
 });
 
-router.get('/api/carts/:cid', async (req, res) => {
+router.get('/:cid', async (req, res) => {
     const cartId = req.params.cid;
     try {
         await cartManager.loadFromFile();
@@ -25,7 +25,7 @@ router.get('/api/carts/:cid', async (req, res) => {
         if (cart) {
             res.json({ products: cart.products });
         } else {
-            res.status(404).json({ error: 'Carrito no encontrado' });
+            res.status(204).json({ error: 'Carrito no encontrado' });
         }
     } catch (error) {
         console.error('Error al obtener productos del carrito:', error);

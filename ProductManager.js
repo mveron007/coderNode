@@ -14,30 +14,32 @@ export default class ProductManager {
         return productsCopy;
     }
 
-    async addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct(title, description, price, thumbnails, code, stock) {
         
         const newProduct = {
             id: uuidv4(),
-            title,
-            description,
-            price,
-            thumbnails:[],
-            code,
+            title: title,
+            description: description,
+            price: price,
+            thumbnails: thumbnails,
+            code: code,
             status: true,
-            stock
-        }
+            stock: stock
+        };
+
         let codeCheck = this.products.find(product => product.code === code) ? true : false;
 
         if (codeCheck == true ||
             this.validateField(title) ||
             this.validateField(description) ||
             this.validateField(price) ||
-            this.validateField(thumbnail) ||
+            this.validateField(thumbnails) ||
             this.validateField(stock)) {
             return "Error"
         } else {
             this.products.push(newProduct);
             await this.saveToFile(this.path, this.products);
+            console.log(`Este es el nuevo prod: ${newProduct}`);
             return newProduct;
         }
     }
@@ -100,7 +102,8 @@ export default class ProductManager {
     async loadFromFile() {
         try {
           const data = await fsPromises.readFile(this.path, 'utf-8');
-          return JSON.parse(data);
+          this.products= JSON.parse(data);
+          return this.products;
         } catch (error) {
           console.error('Error al cargar productos:', error);
           console.error('Datos leídos antes del error:', data);

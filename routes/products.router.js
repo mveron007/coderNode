@@ -1,7 +1,12 @@
 import express from "express";
 import sanitizeHtml from 'sanitize-html';
 import ProductManager from '../ProductManager.js';
-let productManager = new ProductManager("../products.json");
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+let productManager = new ProductManager(path.join(__dirname, '..','products.json'));
 
 const router = express.Router();
 
@@ -43,9 +48,11 @@ router.get('/:pid', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const newProductData = req.body;
+    console.log(`Nuevo: ${JSON.stringify(newProductData)}`);
     try {
-        await productManager.loadFromFile();
+        // let productsArray = await productManager.loadFromFile();
         const newProduct = await productManager.addProduct(newProductData);
+        console.log(`EL PROD: ${newProduct}`);
         res.status(201).json({ message: 'Producto agregado exitosamente', product: newProduct });
     } catch (error) {
         console.error('Error al agregar nuevo producto:', error.message);

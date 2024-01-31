@@ -1,11 +1,26 @@
 [
   {
-    "id": "7e9bbe18-eaa5-41b5-8457-08237ae6e3f1",
-    "title": "Producto prueba",
-    "description": "Es un producto prueba",
-    "price": 200,
-    "thumbnail": "Sin imagen",
-    "code": "abc123",
-    "stock": 25
+    "id": "3eda06e6-ac04-45fa-a7b3-eb066a97db70",
+    "title": {
+      "title": "Producto prueba 2",
+      "description": "Este",
+      "price": 12222,
+      "thumbnails": "img",
+      "code": "324",
+      "stock": 2
+    },
+    "status": true
+  },
+  {
+    "id": "5ebed5aa-8496-4ce1-b031-2b0ee60b57ff",
+    "title": {
+      "title": "Producto prueba 2",
+      "description": "Este",
+      "price": 12222,
+      "thumbnails": "img",
+      "code": "324",
+      "stock": 2
+    },
+    "status": true
   }
 ]
