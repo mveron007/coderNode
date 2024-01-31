@@ -1,8 +1,14 @@
 import express from "express";
 import CartManager from '../CartManager.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const router = express.Router();
 
-const cartManager = new CartManager('../carts.json');
+
+const cartManager = new CartManager(path.join(__dirname, '..','products.json'));
 
 router.post('/', async (req, res) => {
     try {
