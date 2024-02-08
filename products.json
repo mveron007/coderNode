@@ -1,26 +1,22 @@
 [
   {
     "id": "3eda06e6-ac04-45fa-a7b3-eb066a97db70",
-    "title": {
-      "title": "Producto prueba 2",
-      "description": "Este",
-      "price": 12222,
-      "thumbnails": "img",
-      "code": "324",
-      "stock": 2
-    },
+    "title": "Producto prueba 2",
+    "description": "Este",
+    "price": 12222,
+    "thumbnails": "img",
+    "code": "324",
+    "stock": 2,
     "status": true
   },
   {
     "id": "5ebed5aa-8496-4ce1-b031-2b0ee60b57ff",
-    "title": {
-      "title": "Producto prueba 2",
-      "description": "Este",
-      "price": 12222,
-      "thumbnails": "img",
-      "code": "324",
-      "stock": 2
-    },
+    "title": "Producto prueba 2",
+    "description": "Este",
+    "price": 12222,
+    "thumbnails": "img",
+    "code": "324",
+    "stock": 2,
     "status": true
   }
 ]

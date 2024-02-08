@@ -1,4 +1,5 @@
 // const fs = require('fs');
+import { log } from 'console';
 import { promises as fsPromises } from 'fs';
 // const { v4: uuidv4 } = require('uuid');
 import { v4 as uuidv4 } from 'uuid';
@@ -14,8 +15,45 @@ export default class ProductManager {
         return productsCopy;
     }
 
-    async addProduct(title, description, price, thumbnails, code, stock) {
+    // async addProduct(title, description, price, thumbnails, code, stock) {
         
+    //     const newProduct = {
+    //         id: uuidv4(),
+    //         title: title,
+    //         description: description,
+    //         price: price,
+    //         thumbnails: thumbnails,
+    //         code: code,
+    //         status: true,
+    //         stock: stock
+    //     };
+
+    //     let codeCheck = this.products.find(product => product.code === code) ? true : false;
+ 
+    //     try {
+    //         if (codeCheck == true ||
+    //             this.validateField(title) ||
+    //             this.validateField(description) ||
+    //             this.validateField(price) ||
+    //             this.validateField(thumbnails) ||
+    //             this.validateField(stock)) {
+    //                 console.log(this.path);
+    //             throw new Error("Error al crear producto");
+    //         } else {
+    //             this.products.push(newProduct);
+    //             console.log();
+    //             await this.saveToFile(this.path, this.products);
+    //             console.log(`Este es el nuevo prod: ${newProduct}`);
+    //             return newProduct;
+    //         }
+                
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+
+    // }
+
+    async addProduct(title, description, price, thumbnails, code, stock) {
         const newProduct = {
             id: uuidv4(),
             title: title,
@@ -26,23 +64,18 @@ export default class ProductManager {
             status: true,
             stock: stock
         };
-
-        let codeCheck = this.products.find(product => product.code === code) ? true : false;
-
-        if (codeCheck == true ||
-            this.validateField(title) ||
-            this.validateField(description) ||
-            this.validateField(price) ||
-            this.validateField(thumbnails) ||
-            this.validateField(stock)) {
-            return "Error"
-        } else {
-            this.products.push(newProduct);
-            await this.saveToFile(this.path, this.products);
-            console.log(`Este es el nuevo prod: ${newProduct}`);
-            return newProduct;
+    
+        const codeExists = this.products.some(product => product.code === code);
+    
+        if (codeExists || !title || !description || !price || !thumbnails || !stock) {
+            throw new Error("Error al crear producto: Campos inválidos o código duplicado.");
         }
+    
+        this.products.push(newProduct);
+        await this.saveToFile(this.path, this.products);
+        return newProduct;
     }
+    
 
     async updateProduct(id, updateFields) {
         const productIndex = this.products.findIndex(product => product.id === id);
@@ -106,7 +139,6 @@ export default class ProductManager {
           return this.products;
         } catch (error) {
           console.error('Error al cargar productos:', error);
-          console.error('Datos leídos antes del error:', data);
         }
     }
 }

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+</head>
+
+<body>
+
+    <h1>Lista de Productos en Tiempo Real</h1>
+
+    <!-- Formulario para agregar un nuevo producto -->
+    {{!-- id: uuidv4(),
+    title: title,
+    description: description,
+    price: price,
+    thumbnails: thumbnails,
+    code: code,
+    status: true,
+    stock: stock --}}
+    <div>
+        <h5>Agregar producto</h5>
+
+        <form id="productForm" onsubmit="addProduct(); return false;">
+            <label for="productTitle">Título: </label>
+            <input type="text" id="productTitle" required>
+
+            <label for="productPrice">Precio: </label>
+            <input type="number" id="productPrice" required>
+
+            <label for="productCode">Codigo: </label>
+            <input type="text" id="productCode" required>
+
+            <label for="productDesc">Descripcion: </label>
+            <textarea name="" id="productDesc" cols="30" rows="10" required></textarea>
+
+            <button type="submit">Agregar Producto</button>
+        </form>
+    </div>
+
+    
+    <ul id="realTimeProductList">
+        {{#each products}}
+        <li>{{this.title}} - {{this.price}}</li>
+        {{/each}}
+    </ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('updateRealTimeProducts', (updatedProducts) => {
+            const productList = document.getElementById('realTimeProductList');
+            productList.innerHTML = '';
+
+            updatedProducts.forEach((product) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${product.title} - ${product.price}`;
+                productList.appendChild(listItem);
+            });
+
+            location.reload();
+        });
+
+        function addProduct() {
+            const title = document.getElementById('productTitle').value;
+            const price = document.getElementById('productPrice').value;
+            const code = document.getElementById('productCode').value;
+            const desc = document.getElementById('productDesc').value;
+
+            if (!title || !price || !code || !desc) {
+                alert('Completa todos los campos');
+                return;
+            }
+
+            socket.emit('addProduct', { title, price, code, desc });
+
+            document.getElementById('productForm').reset();
+        }
+
+        function deleteProduct(productId) {
+            socket.emit('deleteProduct', { productId });
+        }
+    </script>
+</body>
+
+</html>

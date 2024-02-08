@@ -1,17 +1,22 @@
 import express from 'express';
-import expressHandlebars from 'express-handlebars';
-import http from 'http';
+import handlebars from 'express-handlebars';
+import path from 'path';
+import __dirname from './utils.js';
 import { Server } from 'socket.io';
 import cartsRouter from './routes/carts.router.js';
 import productsRouter from './routes/products.router.js';
+import viewRouter from './routes/views.router.js';
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 const PORT = 8080;
+const httpServer = app.listen(PORT, () => console.log(`${PORT}`));
+const socketServer = new Server(httpServer);
 
 
-app.engine('handlebars', expressHandlebars());
+
+app.engine('handlebars', handlebars.engine());
+app.set('views', path.join(__dirname, 'views'));
+
 app.set('view engine', 'handlebars');
 
 app.use(express.json());
@@ -19,7 +24,28 @@ app.use('/api/products', productsRouter);
 
 app.use('/api/carts', cartsRouter);
 
-app.listen(PORT,()=>console.log(`${PORT}`));
+app.use('/', viewRouter);
+
+socketServer.on('connection', socket => {
+    console.log("Cliente conectado");
+
+    socket.on('productUpdated', () => {
+        socketServer.emit('updateRealTimeProducts');
+    });
+
+    // Manejar evento de agregar un nuevo producto
+    socket.on('addProduct', (newProductData) => {
+        
+        socketServer.emit('updateRealTimeProducts');
+    });
+
+    // Manejar evento de eliminar un producto
+    socket.on('deleteProduct', ({ productId }) => {
+        socketServer.emit('updateRealTimeProducts');
+    });
+
+})
+
 
 // TEST
 // Array vacio
