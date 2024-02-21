@@ -15,44 +15,6 @@ export default class ProductManager {
         return productsCopy;
     }
 
-    // async addProduct(title, description, price, thumbnails, code, stock) {
-        
-    //     const newProduct = {
-    //         id: uuidv4(),
-    //         title: title,
-    //         description: description,
-    //         price: price,
-    //         thumbnails: thumbnails,
-    //         code: code,
-    //         status: true,
-    //         stock: stock
-    //     };
-
-    //     let codeCheck = this.products.find(product => product.code === code) ? true : false;
- 
-    //     try {
-    //         if (codeCheck == true ||
-    //             this.validateField(title) ||
-    //             this.validateField(description) ||
-    //             this.validateField(price) ||
-    //             this.validateField(thumbnails) ||
-    //             this.validateField(stock)) {
-    //                 console.log(this.path);
-    //             throw new Error("Error al crear producto");
-    //         } else {
-    //             this.products.push(newProduct);
-    //             console.log();
-    //             await this.saveToFile(this.path, this.products);
-    //             console.log(`Este es el nuevo prod: ${newProduct}`);
-    //             return newProduct;
-    //         }
-                
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-
-    // }
-
     async addProduct(title, description, price, thumbnails, code, stock) {
         const newProduct = {
             id: uuidv4(),
