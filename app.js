@@ -1,17 +1,32 @@
 import express from 'express';
-import expressHandlebars from 'express-handlebars';
-import http from 'http';
+import handlebars from 'express-handlebars';
+import path from 'path';
+import __dirname from './utils.js';
 import { Server } from 'socket.io';
 import cartsRouter from './routes/carts.router.js';
 import productsRouter from './routes/products.router.js';
+import viewRouter from './routes/views.router.js';
+// import dbPromise from './db.js';
+import mongoose from "mongoose";
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+const dbName= process.env.DB_NAME
+const dbUsername = process.env.DB_USERNAME;
+const dbPassword = process.env.DB_PASSWORD;
+const clusterName = process.env.CLUSTER_NAME;
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 const PORT = 8080;
+const httpServer = app.listen(PORT, () => console.log(`${PORT}`));
+const socketServer = new Server(httpServer);
 
 
-app.engine('handlebars', expressHandlebars());
+app.engine(
+    'handlebars', 
+    handlebars.engine({runtimeOptions: {allowProtoPropertiesByDefault: true}}));
+app.set('views', path.join(__dirname, 'views'));
+
 app.set('view engine', 'handlebars');
 
 app.use(express.json());
@@ -19,21 +34,41 @@ app.use('/api/products', productsRouter);
 
 app.use('/api/carts', cartsRouter);
 
-app.listen(PORT,()=>console.log(`${PORT}`));
+app.use('/', viewRouter);
 
-// TEST
-// Array vacio
-// console.log(productManager.getProducts());
-// // Se agrega un producto
-// console.log(productManager.addProduct("Producto prueba", "Es un producto prueba", 200, "Sin imagen", "abc123", 25));
-// // Array cargado
-// console.log(productManager.getProducts());
-// // Compruebo validaciones
-// productManager.addProduct("Producto prueba", "Es un producto prueba", 200, "Sin imagen", "abc123", 25);
-// // Comprobacion de busqueda por Id => Aplique el id que haya generado en las pruebas anteriores
-// productManager.getProductById("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0");
-// productManager.getProductById(2);
-// // Cambio de campo => Aplique el id que haya generado en las pruebas anteriores
-// productManager.updateProduct("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0", {title:"Producto actualizado"});
-// // Elimino producto => Aplique el id que haya generado en las pruebas anteriores
-// // prod.deleteProduct("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0")
+socketServer.on('connection', socket => {
+    console.log("Cliente conectado");
+
+    socket.on('productUpdated', () => {
+        socketServer.emit('updateRealTimeProducts');
+    });
+
+    // Manejar evento de agregar un nuevo producto
+    socket.on('addProduct', (newProductData) => {
+        
+        socketServer.emit('updateRealTimeProducts');
+    });
+
+    // Manejar evento de eliminar un producto
+    socket.on('deleteProduct', ({ productId }) => {
+        socketServer.emit('updateRealTimeProducts');
+    });
+
+})
+
+
+mongoose.connect(`mongodb+srv://${dbUsername}:${dbPassword}@${clusterName}.kyipzwi.mongodb.net/${dbName}?retryWrites=true&w=majority`)
+.then(()=>{
+    console.log("DB Conectada");
+})
+.catch(error=>{
+    console.error("Ha sucedido un error", error);
+});
+
+
+const dbPromise = mongoose.connection;
+
+dbPromise.on('error', console.error.bind(console, 'connection error:'));
+dbPromise.once('open', function() {
+  console.log('Connected to MongoDB Atlas');
+});
