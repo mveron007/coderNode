@@ -21,7 +21,6 @@ const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`${PORT}`));
 const socketServer = new Server(httpServer);
 
-
 app.engine(
     'handlebars', 
     handlebars.engine({runtimeOptions: {allowProtoPropertiesByDefault: true}}));
