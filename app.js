@@ -6,12 +6,13 @@ import { Server } from 'socket.io';
 import cartsRouter from './routes/carts.router.js';
 import productsRouter from './routes/products.router.js';
 import viewRouter from './routes/views.router.js';
+// import dbPromise from './db.js';
+import mongoose from "mongoose";
 
 const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`${PORT}`));
 const socketServer = new Server(httpServer);
-
 
 
 app.engine('handlebars', handlebars.engine());
@@ -47,19 +48,18 @@ socketServer.on('connection', socket => {
 })
 
 
-// TEST
-// Array vacio
-// console.log(productManager.getProducts());
-// // Se agrega un producto
-// console.log(productManager.addProduct("Producto prueba", "Es un producto prueba", 200, "Sin imagen", "abc123", 25));
-// // Array cargado
-// console.log(productManager.getProducts());
-// // Compruebo validaciones
-// productManager.addProduct("Producto prueba", "Es un producto prueba", 200, "Sin imagen", "abc123", 25);
-// // Comprobacion de busqueda por Id => Aplique el id que haya generado en las pruebas anteriores
-// productManager.getProductById("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0");
-// productManager.getProductById(2);
-// // Cambio de campo => Aplique el id que haya generado en las pruebas anteriores
-// productManager.updateProduct("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0", {title:"Producto actualizado"});
-// // Elimino producto => Aplique el id que haya generado en las pruebas anteriores
-// // prod.deleteProduct("8b23ef7f-9ea5-4b8b-a704-a0bd937d7af0")
+mongoose.connect('mongodb+srv://mveronwork77:coderApp17@CoderCluster.kyipzwi.mongodb.net/coderEcommerce?retryWrites=true&w=majority')
+.then(()=>{
+    console.log("DB Conectada");
+})
+.catch(error=>{
+    console.error("Ha sucedido un error", error);
+});
+
+
+const dbPromise = mongoose.connection;
+
+dbPromise.on('error', console.error.bind(console, 'connection error:'));
+dbPromise.once('open', function() {
+  console.log('Connected to MongoDB Atlas');
+});

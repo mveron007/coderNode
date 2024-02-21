@@ -3,6 +3,7 @@ import sanitizeHtml from 'sanitize-html';
 import ProductManager from '../ProductManager.js';
 import path from 'path';
 import __dirname from '../utils.js';
+import { productModel } from "../src/models/product.model.js";
 
 let productManager = new ProductManager(path.join(__dirname, 'products.json'));
 
@@ -10,21 +11,22 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        await productManager.loadFromFile();
+        // await productManager.loadFromFile();
 
-        let productsToReturn = productManager.products;
+        // let productsToReturn = productManager.products;
+        let products = await productModel.find();
 
         let limit = sanitizeHtml(req.params.limit);
         if (limit > 0 && Number.isInteger(limit)) {
-            productsToReturn = productsToReturn.slice(0, limitValue);
+            products = products.slice(0, limitValue);
         }
-        res.render('home',{ products: productsToReturn });
+        res.render('home',{ products });
     } catch (error) {
         console.error('Error al obtener productos:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-        res.render('home',{
-            msg: "No hay productos disponibles"
-        });
+        // res.status(500).json({ error: 'Error interno del servidor' });
+        // res.render('home',{
+        //     msg: "No hay productos disponibles"
+        // });
     }
 });
 
