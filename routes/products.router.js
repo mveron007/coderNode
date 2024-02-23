@@ -29,20 +29,16 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:pid', async (req, res) => {
-    const productId = req.params.pid;
+    let {pid} = req.params;
     try {
-        await productManager.loadFromFile();
+        let product = await productModel.findOne({id: pid});
 
-        const product = productManager.products.find(product => product.id === productId);
-
-        if (product) {
-            res.json({ product });
-        } else {
-            res.status(404).json({ error: 'Producto no encontrado' });
+        if (!product) {
+            throw new Error("Producto no encontrado");
         }
+        res.send({status:"success", product});
     } catch (error) {
-        console.error('Error al obtener producto por ID:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        console.error('Error al obtener producto por ID:', error.message);
     }
 });
 
