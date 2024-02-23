@@ -1,22 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat</title>
-</head>
-<body>
-  <div id="chat-container">
-    <h1>Chat</h1>
-    <ul id="messages"></ul>
-    <form id="message-form">
-      <input type="text" name="message" placeholder="Escribe tu mensaje">
-      <button type="submit">Enviar</button>
-    </form>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="socket.io.js"></script>
-  <script src="chat.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <h1>Chat</h1>
+    <input id="message" type="text" placeholder="Escribe tu mensaje">
+    <button id="send-message">Enviar</button>
+
+    <div id="messages"></div>
+    <script src="https://cdn.socket.io/4.5.3/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script>
+        const socket = io();
+        let user;
+        let messages = [];
+
+        Swal.fire({
+            title: "Ingresa tu correo",
+            input: "email",
+            inputLabel: "Es necesario para poder chatear",
+            inputPlaceholder: "correo@ejemplo.com",
+            allowOutsideClick: false,
+            allowEnterKey: false,
+            preConfirm: (email) => {
+                user = email;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(`Ingresaste tu correo: ${user}`);
+            }
+        });
+
+        socket.on('message', (data) => {
+            
+            updateMessageDiv();
+        });
+
+        function updateMessageDiv() {
+            const messageDiv = document.getElementById('messages');
+            messageDiv.innerHTML = messages.map(message => `
+                <div class="message">
+                <span class="user">${message.user} dice </span>: ${message.message}
+                </div>
+                </br>`);
+        }
+
+        document.getElementById('send-message').addEventListener('click', () => {
+            const message = document.getElementById('message').value.trim();
+            socket.emit('message', { user, message });
+            messages.push({ user, message });
+            
+            document.getElementById('message').value = '';
+        });
+    </script>
 </body>
+
 </html>

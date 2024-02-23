@@ -9,6 +9,7 @@ import viewRouter from './routes/views.router.js';
 // import dbPromise from './db.js';
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
+import messageModel from './dao/models/messages.model.js';
 
 dotenv.config();
 
@@ -51,6 +52,21 @@ socketServer.on('connection', socket => {
     // Manejar evento de eliminar un producto
     socket.on('deleteProduct', ({ productId }) => {
         socketServer.emit('updateRealTimeProducts');
+    });
+
+
+    socket.on('message', async (data) => {
+        let user= data.user;
+        let message = data.message;
+        try {
+            if (message == '') {
+                throw new Error("El mensaje es invalido");
+            }
+            const newMessage = await messageModel.create({user, message});
+            socketServer.emit('message', newMessage);
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+        }
     });
 
 })
