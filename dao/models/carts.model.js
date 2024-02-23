@@ -1,10 +1,13 @@
 import mongoose from "mongoose";
+import { productSchema } from "./product.model.js";
 
 const cartCollection = "carts";
 
 const cartSchema = new mongoose.Schema({
-    products: Array
+    products: [
+        {qty:{ type: Number, required: true, default: 1 }},
+        {product: productSchema}
+    ]
 });
 
-//Export the model
-module.exports = mongoose.model('User', userSchema);
+export const cartModel = mongoose.model(cartCollection, cartSchema);

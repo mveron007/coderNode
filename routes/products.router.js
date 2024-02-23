@@ -72,9 +72,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:pid', async (req, res) => {
-    console.log("ENTRANDO PUT");
     let { pid } = req.params;
-    // let { title, description, price, thumbnails, code, status, stock } = req.body;
     let productToReplace = req.body
 
     if (!productToReplace) {
@@ -85,27 +83,6 @@ router.put('/:pid', async (req, res) => {
 
     console.log(`El id es: ${pid}`);
 
-    // try {
-    //     let updatedProduct = await productModel.findByIdAndUpdate({id:pid}, {
-    //         title,
-    //         description,
-    //         price,
-    //         thumbnails,
-    //         code,
-    //         status,
-    //         stock,
-    //     });
-
-    //     console.log(`Producto: ${JSON.stringify(updatedProduct)}`);
-
-    //     if (!updatedProduct) {
-    //         throw new Error(`No fue posible editar el producto: ${pid}`);
-    //     }
-
-    //     res.send({ status: "success", payload: updatedProduct });
-    // } catch (error) {
-    //     console.error('Error al actualizar producto:', error.message);
-    // }
 });
 
 router.delete('/:pid', async (req, res) => {

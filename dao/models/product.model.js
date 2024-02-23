@@ -13,4 +13,6 @@ const productSchema = new mongoose.Schema({
     status: Boolean
 });
 
-export const productModel = mongoose.model(productCollection, productSchema);
+const productModel = mongoose.model(productCollection, productSchema);
+
+export { productSchema, productModel };
