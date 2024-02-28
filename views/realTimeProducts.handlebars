@@ -27,6 +27,9 @@
             <label for="productTitle">Título: </label>
             <input type="text" id="productTitle" required>
 
+            <label for="productStock">Stock: </label>
+            <input type="number" id="productStock" required>
+
             <label for="productPrice">Precio: </label>
             <input type="number" id="productPrice" required>
 
@@ -66,16 +69,27 @@
 
         function addProduct() {
             const title = document.getElementById('productTitle').value;
+            const stock = document.getElementById('productStock').value;
             const price = document.getElementById('productPrice').value;
             const code = document.getElementById('productCode').value;
             const desc = document.getElementById('productDesc').value;
+
+            let product = {
+                title, 
+                price, 
+                code, 
+                desc, 
+                stock
+            };
+
+            console.log(JSON.stringify(product));
 
             if (!title || !price || !code || !desc) {
                 alert('Completa todos los campos');
                 return;
             }
 
-            socket.emit('addProduct', { title, price, code, desc });
+            socket.emit('addProduct', { product });
 
             document.getElementById('productForm').reset();
         }

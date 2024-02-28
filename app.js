@@ -10,6 +10,8 @@ import viewRouter from './routes/views.router.js';
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import messageModel from './dao/models/messages.model.js';
+import { productModel } from './dao/models/product.model.js';
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -44,14 +46,45 @@ socketServer.on('connection', socket => {
     });
 
     // Manejar evento de agregar un nuevo producto
-    socket.on('addProduct', (newProductData) => {
+    socket.on('addProduct', async (product) => {
+        let {title, description, price, code, stock} = product;
+        console.log(JSON.stringify(product));
+
+        try {
+            if (!product) {
+                throw new Error("Error al ingresar producto");
+            }
+            await productModel.create({
+                id: uuidv4(),
+                title,
+                description,
+                price,
+                thumbnails: [],
+                code,
+                status: true,
+                stock
+            });
+            let updatedProducts = await productModel.find();
         
-        socketServer.emit('updateRealTimeProducts');
+            socketServer.emit('updateRealTimeProducts', updatedProducts);
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+        }
     });
 
     // Manejar evento de eliminar un producto
-    socket.on('deleteProduct', ({ productId }) => {
-        socketServer.emit('updateRealTimeProducts');
+    socket.on('deleteProduct', async({ productId }) => {
+        try {
+            if (!productId) {
+                throw new Error("Error al ingresar producto");
+            }
+            await productModel.deleteOne({id: productId});
+            let updatedProducts = await productModel.find();
+        
+            socketServer.emit('updateRealTimeProducts', updatedProducts);
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+        }
     });
 
 
