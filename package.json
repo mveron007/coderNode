@@ -5,7 +5,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon --watch app.js"
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,8 @@
     "sanitize-html": "^2.11.0",
     "socket.io": "^4.7.4",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

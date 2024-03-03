@@ -1,5 +1,5 @@
 import express from "express";
-import ProductManager from '../ProductManager.js';
+import ProductManager from '../dao/managerFs/ProductManager.js';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import __dirname from '../utils.js';

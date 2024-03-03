@@ -1,10 +1,7 @@
 import express from "express";
-import sanitizeHtml from 'sanitize-html';
-import ProductManager from '../ProductManager.js';
+import ProductManager from '../dao/managerFs/ProductManager.js';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 import __dirname from '../utils.js';
-import { productModel } from "../dao/models/product.model.js";
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../dao/controller/product.controller.js";
 
 let productManager = new ProductManager(path.join(__dirname, 'products.json'));
@@ -12,40 +9,35 @@ let productManager = new ProductManager(path.join(__dirname, 'products.json'));
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    let products = getAllProducts();
-    res.render('home', { products });
-    // try {
-    //     let products = await productModel.find();
-
-    //     let limit = sanitizeHtml(req.params.limit);
-    //     if (limit > 0 && Number.isInteger(limit)) {
-    //         products = products.slice(0, limitValue);
-    //     }
-    //     res.render('home', { products });
-    // } catch (error) {
-    //     console.error('Error al obtener productos:', error);
-    // }
+    let prods = getAllProducts();
+    prods.then(function(products){
+        res.render('home', { products });
+    })
 });
 
 router.get('/:pid', async (req, res) => {
     let {pid} = req.params;
 
-    let product = getProductById(pid);
-    res.send({status:"success", product});
+    let prod = getProductById(pid);
 
-    // try {
-    //     let product = await productModel.findOne({id: pid});
-
-    //     if (!product) {
-    //         throw new Error("Producto no encontrado");
-    //     }
-    //     res.send({status:"success", product});
-    // } catch (error) {
-    //     console.error('Error al obtener producto por ID:', error.message);
-    // }
+    prod.then(function(product){
+        res.send({status:"success", product});
+    })
 });
 
-router.post('/', createProduct(req, res));
+router.post('/', async (req, res) =>{
+    let { title, description, price, thumbnails, code, status, stock } = req.body;
+    let product = {
+        title,
+        description,
+        price,
+        thumbnails,
+        code,
+        status: status !== "" ? status : true,
+        stock
+    };
+    res.send({ status: "success", payload: createProduct(product) });
+});
 // async (req, res) => {
 
 
@@ -76,7 +68,7 @@ router.post('/', createProduct(req, res));
 router.put('/:pid', async (req, res) => {
     let { pid } = req.params;
     let productToReplace = req.body
-    updateProduct(pid, productToReplace, res);
+    res.send({ result: "success", payload: updateProduct(pid, productToReplace) });
     // if (!productToReplace) {
     //     res.send({ result: "error", error: "Faltan datos" });
     // }
@@ -89,7 +81,7 @@ router.put('/:pid', async (req, res) => {
 
 router.delete('/:pid', async (req, res) => {
     let { pid } = req.params;
-    deleteProduct(pid, res);
+    res.send({status: "success", payload: deleteProduct(pid)});
     // try {
     //     let product = await productModel.deleteOne({id:pid});
 

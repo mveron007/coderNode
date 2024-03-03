@@ -11,15 +11,6 @@
 
     <h1>Lista de Productos en Tiempo Real</h1>
 
-    <!-- Formulario para agregar un nuevo producto -->
-    {{!-- id: uuidv4(),
-    title: title,
-    description: description,
-    price: price,
-    thumbnails: thumbnails,
-    code: code,
-    status: true,
-    stock: stock --}}
     <div>
         <h5>Agregar producto</h5>
 
@@ -43,10 +34,11 @@
         </form>
     </div>
 
-    
+
     <ul id="realTimeProductList">
         {{#each products}}
-        <li>{{this.title}} - {{this.price}}</li>
+        <li id="{{this.id}}">{{this.title}} - {{this.price}} <button type="button"
+                onclick="deleteProduct('{{this.id}}')">Eliminar</button> </li>
         {{/each}}
     </ul>
 
@@ -60,8 +52,17 @@
 
             updatedProducts.forEach((product) => {
                 const listItem = document.createElement('li');
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = "Eliminar";
                 listItem.textContent = `${product.title} - ${product.price}`;
+                listItem.appendChild(deleteBtn);
                 productList.appendChild(listItem);
+
+
+                deleteBtn.addEventListener('click', function () {
+                    const productId = this.parentElement.id;
+                    deleteProduct(productId);
+                });
             });
 
             location.reload();
@@ -72,19 +73,17 @@
             const stock = document.getElementById('productStock').value;
             const price = document.getElementById('productPrice').value;
             const code = document.getElementById('productCode').value;
-            const desc = document.getElementById('productDesc').value;
+            const description = document.getElementById('productDesc').value;
 
             let product = {
-                title, 
-                price, 
-                code, 
-                desc, 
+                title,
+                price,
+                code,
+                description,
                 stock
             };
 
-            console.log(JSON.stringify(product));
-
-            if (!title || !price || !code || !desc) {
+            if (!title || !price || !code || !description) {
                 alert('Completa todos los campos');
                 return;
             }
