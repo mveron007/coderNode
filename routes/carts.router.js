@@ -12,10 +12,6 @@ const cartManager = new CartManager(path.join(__dirname, '..','products.json'));
 router.post('/', async (req, res)=>{
     let {products} = req.body;
 
-    console.log(req.body.products);
-    console.log("BRRRRRRR");
-    console.log(req.body.products[0]);
-
     let newCart = createCart(products);
 
     newCart.then(function(cart){

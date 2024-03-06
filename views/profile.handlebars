@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+</head>
+<body>
+    <h1>¡Bienvenido {{user.first_name}} {{user.last_name}} !</h1>
+    {{!-- {{#if (user.rol '===' "admin")}}
+        <a href="/user/admin">Panel Administrador</a>
+    {{/if}} --}}
+    <a href="/user/logout">Cerrar sesión</a>
+</body>
+</html>

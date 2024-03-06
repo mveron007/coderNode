@@ -1,5 +1,15 @@
 # coderNode
 
+## user/
+![alt text](./resources/login.png "Login")
+
+## user/register
+![alt text](./resources/post-api-register.png "Post api register")
+
+## user/login
+![alt text](./resources/get-api-login.png "Get api login")
+
+
 ## api/products
 
 ### POST

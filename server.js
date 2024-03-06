@@ -13,12 +13,13 @@ const dbName = process.env.DB_NAME
 const dbUsername = process.env.DB_USERNAME;
 const dbPassword = process.env.DB_PASSWORD;
 const clusterName = process.env.CLUSTER_NAME;
+const urlDb = `mongodb+srv://${dbUsername}:${dbPassword}@${clusterName}.kyipzwi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 const app = express();
 const server = http.createServer(app);
 const socketServer = new Server(server);
 
 
-mongoose.connect(`mongodb+srv://${dbUsername}:${dbPassword}@${clusterName}.kyipzwi.mongodb.net/${dbName}?retryWrites=true&w=majority`)
+mongoose.connect(urlDb)
   .then(() => {
     console.log("DB Conectada");
   })
@@ -103,5 +104,5 @@ socketServer.on('connection', socket => {
 
 })
 
-export { app, server, dbPromise };
+export { app, server, urlDb, dbPromise };
 
