@@ -9,12 +9,16 @@ import { app, server, dbPromise, urlDb } from './server.js';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import userRouter from './routes/user.router.js';
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
+import sessionRouter from './routes/sessions.router.js';
 
 const PORT = 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+initializePassport();
 app.use(session({
     store: new MongoStore({ 
         mongoUrl: urlDb,
@@ -25,6 +29,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
   }));
+app.use(passport.initialize());
 
 app.engine(
     'handlebars', 
@@ -40,5 +45,7 @@ app.use('/api/carts', cartsRouter);
 app.use('/', viewRouter);
 
 app.use('/user', userRouter);
+
+app.use('/session', sessionRouter);
 
 server.listen(PORT, () => console.log(`${PORT}`));
