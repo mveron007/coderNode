@@ -10,11 +10,12 @@ const clientSecret = process.env.CLIENT_SECRET;
 const callback = process.env.CALLBACK_URL;
 
 const initializePassport = () =>{
-    passport.use(new GitHubStrategy({
+    passport.use('github', new GitHubStrategy({
         clientID: clientId,
         clientSecret: clientSecret,
         callbackURL: callback
       }, async (accessToken, refreshToken, profile, done) => {
+        console.log("ACCESS: " + accessToken);
 
         try {
             console.log(profile);
@@ -38,14 +39,14 @@ const initializePassport = () =>{
         }
       }));
 
-    // passport.serializeUser((user, done) =>{
-    //     done(null, user._id);
-    // });
+    passport.serializeUser((user, done) =>{
+        done(null, user._id);
+    });
 
-    // passport.deserializeUser(async (id, done) =>{
-    //     let user = await userModel.findById(id);
-    //     done(null, user);
-    // })
+    passport.deserializeUser(async (id, done) =>{
+        let user = await userModel.findById(id);
+        done(null, user);
+    })
 }
 
 export default initializePassport;

@@ -46,6 +46,6 @@ app.use('/', viewRouter);
 
 app.use('/user', userRouter);
 
-app.use('/session', sessionRouter);
+app.use('/api/sessions', sessionRouter);
 
 server.listen(PORT, () => console.log(`${PORT}`));

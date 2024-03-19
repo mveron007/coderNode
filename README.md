@@ -9,6 +9,9 @@
 ## user/login
 ![alt text](./resources/get-api-login.png "Get api login")
 
+## user/login --> github
+![alt text](./resources/github-passport-step-2.png "Github login")
+
 
 ## api/products
 
