@@ -1,7 +1,7 @@
 import express from "express";
 import CartManager from '../dao/managerFs/CartManager.js';
 import path from 'path';
-import __dirname from '../utils.js';
+import {__dirname} from '../config/utils.js';
 import {getCartById, createCart, updateCart} from "../dao/controller/carts.controller.js";
 
 const router = express.Router();

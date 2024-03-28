@@ -1,7 +1,7 @@
 import express from "express";
 import ProductManager from '../dao/managerFs/ProductManager.js';
 import path from 'path';
-import __dirname from '../utils.js';
+import {__dirname }from '../config/utils.js';
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../dao/controller/product.controller.js";
 
 let productManager = new ProductManager(path.join(__dirname, 'products.json'));

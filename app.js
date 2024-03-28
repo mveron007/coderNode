@@ -1,17 +1,18 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import path from 'path';
-import __dirname from './utils.js';
+import {__dirname} from './config/utils.js';
 import cartsRouter from './routes/carts.router.js';
 import productsRouter from './routes/products.router.js';
 import viewRouter from './routes/views.router.js';
-import { app, server, dbPromise, urlDb } from './server.js';
+import { app, server, dbPromise, urlDb } from './config/server.js';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import userRouter from './routes/user.router.js';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import sessionRouter from './routes/sessions.router.js';
+// import cookieParser from 'cookie-parser';
 
 const PORT = 8080;
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 initializePassport();
+// app.use(cookieParser());
 app.use(session({
     store: new MongoStore({ 
         mongoUrl: urlDb,

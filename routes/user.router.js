@@ -1,6 +1,7 @@
 import express from "express";
 import { registerUser, loginUser } from "../dao/controller/user.controller.js";
 import bcryptjs from "bcryptjs";
+import { authToken, generateToken } from "../config/utils.js";
 
 const userRouter = express.Router();
 
@@ -35,38 +36,55 @@ userRouter.get('/register', async (req, res) => {
 });
 
 userRouter.post('/register',
- async (req, res)=>{
-    let {first_name, last_name, email, age, password, rol} = req.body;
+    async (req, res) => {
+        let { first_name, last_name, email, age, password, rol } = req.body;
 
-    const hashedPassword = await bcryptjs.hash(password, 10);
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
-    let user = {
-      first_name,
-      last_name,
-      email,
-      age,
-      password: hashedPassword,
-      rol
-    };
-    res.send({status: "success", payload:registerUser(user)});
+        let user = {
+            first_name,
+            last_name,
+            email,
+            age,
+            password: hashedPassword,
+            rol
+        };
+        const createdUser = await registerUser(user);
+        const access_token = generateToken(createdUser);
+        // res.send({ status: "success", payload: registerUser(user) });
+        res.cookie('authToken', access_token, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV === 'production', // Set secure only in production
+            maxAge: 3600000,
+        });
+        res.render('login', {
+            success: true,
+            access_token: "El token fue guardado exitosamente"
+        });
 
-});
+    });
 
 userRouter.post('/login', async (req, res) => {
     let { email, password } = req.body;
     console.log(`El email ${email}-${password}`);
     let getUser = loginUser(email, password);
-    getUser.then(function (user) {
-        req.session.user = {
-            _id: user._id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            rol: user.rol,
-        };
-        console.log(`session user: ${JSON.stringify(req.session.user)}`);
-        res.render('profile', { user: req.session.user });
-    })
+    console.log("USER: ");
+    console.log(JSON.stringify(getUser));
+    // console.log(`session user: ${JSON.stringify(req.session.user)}`);
+    const access_token = generateToken(getUser);
+    res.cookie('authToken', access_token, {
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === 'production', // Set secure only in production
+        maxAge: 3600000,
+    });
+    res.render('profile', {
+        success: true,
+        access_token: "El token fue guardado exitosamente"
+    });
+});
+
+userRouter.get('/current', authToken, (req, res) => {
+    res.send({ status: "success", access_token });
 });
 
 userRouter.get('/admin', (req, res) => {
@@ -76,6 +94,6 @@ userRouter.get('/admin', (req, res) => {
 userRouter.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/user');
-  });
+});
 
 export default userRouter;

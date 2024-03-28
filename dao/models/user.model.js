@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 const userCollection = "users";
@@ -8,6 +9,7 @@ const userSchema = new mongoose.Schema({
     email: String,
     age: Number,
     password: String,
+    cart: ObjectId,
     rol: String,
 });
 

@@ -2,7 +2,7 @@ import express from "express";
 import ProductManager from '../dao/managerFs/ProductManager.js';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import __dirname from '../utils.js';
+import {__dirname} from '../config/utils.js';
 import { productModel } from "../dao/models/product.model.js";
 
 const viewRouter = express.Router();

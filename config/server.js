@@ -4,8 +4,8 @@ import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import http from 'http';
 import { v4 as uuidv4 } from 'uuid';
-import { createProduct, deleteProduct, getAllProducts } from "./dao/controller/product.controller.js";
-import messageModel from "./dao/models/messages.model.js";
+import { createProduct, deleteProduct, getAllProducts } from "../dao/controller/product.controller.js";
+import messageModel from "../dao/models/messages.model.js";
 
 dotenv.config();
 
